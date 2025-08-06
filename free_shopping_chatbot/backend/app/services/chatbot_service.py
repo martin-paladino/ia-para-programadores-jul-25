@@ -1,29 +1,20 @@
-from google import genai
-from google.genai import types
+from langchain.chat_models import init_chat_model
 import os
+
 
 class ChatbotService:
     def __init__(self):
-        # Usa la API key desde variable de entorno o ponla aquí (no recomendado en producción)
-        api_key = "AIzaSyABNfs6v9Q08LJoKMJZluGPhu-0XR_6VtM"
-        self.client = genai.Client(api_key=api_key)
+        # definir la API key desde la variable de entorno GOOGLE_API_KEY
+        os.environ["GOOGLE_API_KEY"] = "tu_api_key"
+        self.model = init_chat_model("gemini-2.5-flash", model_provider="google_genai")
 
     def get_response(self, user_message: str) -> str:
         # Prompt simple, se puede mejorar con contexto o instrucciones
         print(f"Consultando Gemini con mensaje: {user_message}")
         try:
-            response = self.client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=user_message,
-                config=types.GenerateContentConfig(
-                    system_instruction="Sos un asistente de Free Shopping. Ayuda a los usuarios a vender productos y resolver dudas o reclamos.",
-                    #max_output_tokens=500,
-                    temperature=0.2
-                ),
-            )
+            response = self.model.invoke(user_message)
             print(response)
-            if not hasattr(response, 'text') or response.text is None or not str(response.text).strip():
-                return "Lo siento, no pude generar una respuesta en este momento. ¿Podés intentar de nuevo o reformular tu consulta?"
-            return response.text
+            # LangChain Gemini retorna el texto en response.content
+            return response.content
         except Exception as e:
             return f"[Error al consultar Gemini: {e}]"
