@@ -1,14 +1,21 @@
-<!-- Página principal del chatbot -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Free Shopping Chatbot</title>
+    <title>Free Shopping</title>
     <link rel="stylesheet" href="../static/css/style.css">
 </head>
 <body>
+    <div class="header">
+        <h1>Free Shopping</h1>
+        <p>Hola usuario</p>
+    </div>
     <div id="chatbot-container">
-        <!-- Aquí irá el chatbot -->
+        <div id="messages" class="messages"></div>
+        <form id="chat-form">
+            <input type="text" id="user-input" placeholder="Escribe tu mensaje..." autocomplete="off" />
+            <button type="submit">Enviar</button>
+        </form>
     </div>
     <script src="../static/js/script.js"></script>
 </body>
