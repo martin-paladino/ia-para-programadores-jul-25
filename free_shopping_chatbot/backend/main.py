@@ -20,10 +20,10 @@ app.add_middleware(
 @app.post("/chat")
 async def chat(request: Request):
     data = await request.json()
-    user_message = data.get("message", "")
+    messages = data.get("messages", [])
 
-    print(f"Mensaje del usuario: {user_message}")
+    print(f"Mensaje del usuario: {messages}")
 
-    reply = get_response(user_message)
+    reply = get_response(messages)
     return JSONResponse({"reply": reply})
 
