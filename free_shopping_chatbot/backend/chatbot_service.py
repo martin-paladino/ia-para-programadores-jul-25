@@ -5,7 +5,7 @@ from langchain.chat_models import init_chat_model
 import os
 
 # Configura la clave de API de Google para acceder al modelo Gemini
-os.environ["GOOGLE_API_KEY"] = "AIzaSyAUOqT3Qhz7aNJPY9ybb5GA17xp9CXmQ6E"
+os.environ["GOOGLE_API_KEY"] = "tu_api_key_aqui"
 
 # Inicializa el modelo de chat especificando el modelo y el proveedor
 model = init_chat_model("gemini-2.5-flash", model_provider="google_genai")
