@@ -30,12 +30,12 @@ general_model = init_chat_model(
 )
 
 
-def classify_message(user_message: str) -> str:
+def classify_message(messages: list[dict]) -> str:
     """
-    Clasifica el mensaje del usuario para determinar el tipo de consulta con ayuda de un modelo de IA.
+    Lee el historial de conversacion y clasifica el tipo de consulta con ayuda de un modelo de IA.
 
     Args:
-        user_message (str): Mensaje del usuario a clasificar.
+        messages (list[dict]): Lista de mensajes en formato dict, cada uno con 'role' y 'content'.
 
     Returns:
         str: Tipo de consulta clasificado.
@@ -55,10 +55,7 @@ def classify_message(user_message: str) -> str:
             )
         }
 
-        messages = [
-            system_message,
-            {"role": "user", "content": user_message}
-        ]
+        messages = [system_message] + messages  # Agrega el mensaje de sistema al inicio
 
         # Invoca el modelo de clasificación con el mensaje del usuario
         response = classisifier_model.invoke(messages)
@@ -89,7 +86,8 @@ def get_agent_config(category: str) -> tuple:
             "content": (
                 """
                 Sos un asistente de ventas que ayuda a los usuarios a publicar y vender sus productos.\n"
-                "Tenes que tener un tono amigable y usar emojis en tus respuestas."
+                "Tenes que tener un tono amigable y usar emojis en tus respuestas.\n"
+                "Siempre comenza tus respuestas identificandote: [Asistente de ventas]\n"
                 """
             )
         }
@@ -101,7 +99,8 @@ def get_agent_config(category: str) -> tuple:
             "content": (
                 """
                 Sos un asistente que maneja reclamos de clientes de manera profesional y empática.\n"
-                "Tenes que disculparte por los inconvenientes y ofrecer soluciones adecuadas."
+                "Tenes que disculparte por los inconvenientes y ofrecer soluciones adecuadas.\n"
+                "Siempre comenza tus respuestas identificandote: [Asistente de reclamos]\n"
                 """
             )
         }
@@ -114,7 +113,8 @@ def get_agent_config(category: str) -> tuple:
                 """
                 Tu funcion es transmitir a los usuarios que no podes ayudarlos con su consulta.\n"
                 "Debes decirle que por ahora solo podes ayudarlos a vender sus productos o con reclamos.\n"
-                "Tenes que tener un tono amigable y usar emojis en tus respuestas."
+                "Tenes que tener un tono amigable y usar emojis en tus respuestas.\n"
+                "Siempre comenza tus respuestas identificandote: [Asistene general]\n"
                 """
             )
         }
@@ -131,8 +131,8 @@ def get_response(messages: list[dict]) -> list[dict]:
         list[dict]: Lista de mensajes incluyendo la respuesta del asistente.
     """
 
-    # Se evalua el primer mensaje del usuario para clasificar el tipo de consulta
-    category = classify_message(messages[0]["content"])
+    # Se evalua el historial de mensajes para clasificar el tipo de consulta
+    category = classify_message(messages)
     print(f"Categoría clasificada: {category}")
     
     # Se obtiene el modelo y las instrucciones del agente según la categoría
